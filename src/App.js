@@ -21,9 +21,8 @@ const App = () => {
   const apiUrl =
     "https://echarts.apache.org/examples/data-gl/asset/data/flights.json";
 
-  const ref = useRef(null);
-
   // const handleError = useErrorHandler();
+  const ref = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -54,9 +53,9 @@ const App = () => {
 
   // todo list -
   // download assets
-  // globeChart.resize
   // speedup rotate
   // get minimal bundle
+  // initial zoom out on mobile devices
   const ROOT_PATH = "https://echarts.apache.org/examples";
 
   // data from api
@@ -69,13 +68,6 @@ const App = () => {
   // 6: "lon-dir"
   // 7: "alt"
   // 8: "vel"
-
-  // .filter((dataItem) => dataItem[2] > 4)
-  // .map((dataItem) => [dataItem[3], dataItem[5], dataItem[7]]);
-
-  // const globeData = data
-  //   .filter((dataItem) => dataItem[2] > 4)
-  //   .map((dataItem) => [dataItem[0], dataItem[1], Math.sqrt(dataItem[2])]);
 
   // const getCometOptions = useCallback(() => {
   //   const globeData = data
@@ -174,6 +166,9 @@ const App = () => {
           },
         },
         viewControl: {
+          maxDistance: 1000,
+          zoomSensitivity: 5,
+          panSensitivity: 5,
           autoRotate: false,
         },
       },
@@ -182,7 +177,7 @@ const App = () => {
         coordinateSystem: "globe",
         blendMode: "lighter",
         lineStyle: {
-          width: 1,
+          width: 2,
           color: "rgb(50, 50, 150)",
           opacity: 0.1,
         },
@@ -220,6 +215,8 @@ const App = () => {
       }
     };
     fetchData();
+    // const chartDom = ref.current;
+    // globeChart = echarts.init(ref.current);
     console.log("data", data);
   }, []);
 
@@ -229,6 +226,7 @@ const App = () => {
     const globeChart = echarts.init(chartDom);
 
     option && globeChart.setOption(option);
+    window.addEventListener("resize", globeChart.resize);
 
     return () => {};
   }, [data, getChartOptions, option]);
