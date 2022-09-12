@@ -8,10 +8,12 @@ import React, {
 import { ErrorBoundary } from "react-error-boundary";
 
 import "echarts-gl";
-import ReactEcharts from "echarts-for-react";
+// import ReactEcharts from "echarts-for-react";
 import * as echarts from "echarts";
 
 import "./App.css";
+
+import { GetAirlinefilter } from "./utils/dataUtils";
 
 const App = () => {
   // get the api data from https://ssd-api.jpl.nasa.gov/doc/fireball.html
@@ -51,11 +53,13 @@ const App = () => {
   //   );
   // };
 
-  // todo list -
+  // todo list
   // download assets
   // speedup rotate
   // get minimal bundle
   // initial zoom out on mobile devices
+  // refactor to Typescript
+  // prettify
   const ROOT_PATH = "https://echarts.apache.org/examples";
 
   // data from api
@@ -150,6 +154,9 @@ const App = () => {
     const routes = data?.routes?.map(function (airline) {
       return [getAirportCoord(airline[1]), getAirportCoord(airline[2])];
     });
+
+    console.log("routes::", routes);
+
     option = {
       backgroundColor: "#000",
       globe: {
@@ -206,6 +213,7 @@ const App = () => {
         const jsonData = await response.json();
         console.log("jsonData:::", jsonData);
         setData(jsonData);
+        localStorage.setItem("apiData", JSON.stringify(jsonData));
         setIsLoading(false);
       } catch (error) {
         console.log("error here!", error.message);
@@ -217,10 +225,10 @@ const App = () => {
     fetchData();
     // const chartDom = ref.current;
     // globeChart = echarts.init(ref.current);
-    console.log("data", data);
   }, []);
 
   useEffect(() => {
+    console.log("data in useEffect::::>>>>>>", data);
     data && getChartOptions();
     const chartDom = ref.current;
     const globeChart = echarts.init(chartDom);
@@ -229,15 +237,16 @@ const App = () => {
     window.addEventListener("resize", globeChart.resize);
 
     return () => {};
-  }, [data, getChartOptions, option]);
+  }, [data, getChartOptions, option, setData]);
 
   return (
     <div className="App">
       {isLoading && <div className="loader">Loading</div>}
       {hasError && <div className="loader">hasError!!!</div>}
 
-      <div ref={ref} style={{ width: "100vw", height: "100vh" }} />
-      {/* {data?.length > 0 && getChartOptions(data)} */}
+      <div ref={ref} style={{ width: "100vw", height: "90vh" }}></div>
+
+      {data && <GetAirlinefilter setData={setData} />}
 
       {/* <ReactEcharts option={option} /> */}
       {/* <header className="App-header">
