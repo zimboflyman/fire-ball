@@ -90,32 +90,30 @@ export const GetDistanceFilter = ({ setData }) => {
 
   // filter apiData by distance between route endpoints and setData to trigger a new render
   const distanceFilter = (dist) => {
+    console.log("dist:::", dist);
     const longHaulRouteData = apiData?.routes?.filter(
       (airline) =>
-        // console.log(
-        //   "route inside filter funct",
-        //   getDistance(route[0][0], route[0][1], route[1][0], route[1][1], "N")
-        // )
-
         getDistance(
-          apiData.airports[airline[1][3]],
-          apiData.airports[airline[1][4]],
-          apiData.airports[airline[2][3]],
-          apiData.airports[airline[2][4]],
+          apiData.airports[airline[1]][3],
+          apiData.airports[airline[1]][4],
+          apiData.airports[airline[2]][3],
+          apiData.airports[airline[2]][4],
           "N"
         ) > dist
     );
-    console.log("longHaulRouteData", longHaulRouteData);
-    //
-    // apiData.routes.length = 0;
-    // apiData.routes.push.apply(apiData.routes, longHaulRouteData);
+
+    apiData.routes.length = 0;
+    apiData.routes.push.apply(apiData.routes, longHaulRouteData);
 
     setData(apiData);
   };
 
   const ddTitles = [
-    ["longer than 1000 Miles", 1000],
-    ["longer than 2000 Miles", 5500],
+    ["longer than 2000 Miles", 2000],
+    ["longer than 3000 Miles", 3000],
+    ["longer than 4000 Miles", 4000],
+    ["longer than 5000 Miles", 5000],
+    ["longer than 6000 Miles", 6000],
   ];
 
   return (
