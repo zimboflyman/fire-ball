@@ -8,10 +8,17 @@ import React, {
 import { ErrorBoundary } from "react-error-boundary";
 
 import "echarts-gl";
-import ReactEcharts from "echarts-for-react";
+// import ReactEcharts from "echarts-for-react";
 import * as echarts from "echarts";
 
 import "./App.css";
+
+import {
+  GetAirlinefilter,
+  getRoutes,
+  getAirports,
+  GetDistanceFilter,
+} from "./utils/dataUtils";
 
 const App = () => {
   // get the api data from https://ssd-api.jpl.nasa.gov/doc/fireball.html
@@ -51,11 +58,14 @@ const App = () => {
   //   );
   // };
 
-  // todo list -
+  // todo list
   // download assets
   // speedup rotate
   // get minimal bundle
   // initial zoom out on mobile devices
+  // refactor to Typescript
+  // prettify
+  // show long haul flights - work distances between routes
   const ROOT_PATH = "https://echarts.apache.org/examples";
 
   // data from api
@@ -141,15 +151,43 @@ const App = () => {
 
   // useCallback hook - used to maintain the same memory reference through each render to prevent endless rendering—unless something in its dependency array changes
   const getChartOptions = useCallback(() => {
-    function getAirportCoord(idx) {
-      return [data.airports[idx][3], data.airports[idx][4]];
-    }
+    const routes = getRoutes(data);
+    console.log("ROUTES::", routes);
 
-    console.log("data inside getChartOptions:", data);
+    const airports = getAirports(data);
+    console.log("airports:::", airports);
 
-    const routes = data?.routes?.map(function (airline) {
-      return [getAirportCoord(airline[1]), getAirportCoord(airline[2])];
-    });
+    const airportSeries = {
+      type: "scatter3D",
+      coordinateSystem: "globe",
+      // blendMode: "lighter",
+      symbolSize: 4,
+      itemStyle: {
+        color: "rgb(50, 50, 150)",
+        opacity: 0.9,
+      },
+      data: airports,
+    };
+
+    const flightSeries = {
+      type: "lines3D",
+      coordinateSystem: "globe",
+      effect: {
+        show: true,
+        trailWidth: 1,
+        trailOpacity: 0.5,
+        trailLength: 0.2,
+        constantSpeed: 5,
+      },
+      blendMode: "lighter",
+      lineStyle: {
+        width: 2,
+        color: "rgb(50, 50, 150)",
+        opacity: 0.1,
+      },
+      data: routes,
+    };
+
     option = {
       backgroundColor: "#000",
       globe: {
@@ -170,20 +208,14 @@ const App = () => {
           zoomSensitivity: 5,
           panSensitivity: 5,
           autoRotate: false,
+          damping: 0.85,
+          rotateSensitivity: 2,
         },
-      },
-      series: {
-        type: "lines3D",
-        coordinateSystem: "globe",
-        blendMode: "lighter",
-        lineStyle: {
-          width: 2,
-          color: "rgb(50, 50, 150)",
-          opacity: 0.1,
-        },
-        data: routes,
       },
     };
+
+    option.series = flightSeries;
+
     // const chartDom = ref.current;
     // const globeChart = echarts.init(chartDom);
 
@@ -206,6 +238,7 @@ const App = () => {
         const jsonData = await response.json();
         console.log("jsonData:::", jsonData);
         setData(jsonData);
+        localStorage.setItem("apiData", JSON.stringify(jsonData));
         setIsLoading(false);
       } catch (error) {
         console.log("error here!", error.message);
@@ -217,7 +250,6 @@ const App = () => {
     fetchData();
     // const chartDom = ref.current;
     // globeChart = echarts.init(ref.current);
-    console.log("data", data);
   }, []);
 
   useEffect(() => {
@@ -229,15 +261,17 @@ const App = () => {
     window.addEventListener("resize", globeChart.resize);
 
     return () => {};
-  }, [data, getChartOptions, option]);
+  }, [data, getChartOptions, option, setData]);
 
   return (
     <div className="App">
       {isLoading && <div className="loader">Loading</div>}
       {hasError && <div className="loader">hasError!!!</div>}
 
-      <div ref={ref} style={{ width: "100vw", height: "100vh" }} />
-      {/* {data?.length > 0 && getChartOptions(data)} */}
+      <div ref={ref} style={{ width: "100vw", height: "90vh" }}></div>
+
+      {data && <GetAirlinefilter setData={setData} />}
+      {data && <GetDistanceFilter setData={setData} />}
 
       {/* <ReactEcharts option={option} /> */}
       {/* <header className="App-header">
