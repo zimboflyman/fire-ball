@@ -3,7 +3,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { StyledDropDownBtn } from "./Toolkit";
 import { getDistance } from "../utils/dataUtils";
 
-export const ShowDistanceFilter = ({ setData }) => {
+export const ShowDistanceFilter = ({ setData, setSeries }) => {
   const apiData = JSON.parse(localStorage.getItem("apiData"));
   const [ddLabel, setDdLabel] = useState("Show long-haul flights");
 
@@ -24,8 +24,9 @@ export const ShowDistanceFilter = ({ setData }) => {
     apiData.routes.length = 0;
     apiData.routes.push.apply(apiData.routes, longHaulRouteData);
 
-    setDdLabel("> " + dist + ` miles`);
+    setDdLabel(">  " + dist + ` miles`);
     setData(apiData);
+    setSeries("airlines");
   };
 
   const ddTitles = [

@@ -17,6 +17,7 @@ export const getAirports = (data) => {
   const airports = data?.airports?.map((airports) => [
     airports[3],
     airports[4],
+    airports[0],
   ]);
 
   return airports;
@@ -50,7 +51,7 @@ export const getDistance = (lat1, lon1, lat2, lon2, unit) => {
   }
 };
 
-export const getChartOptions = (data, option) => {
+export const getChartOptions = (data, series) => {
   const routes = getRoutes(data);
   console.log("ROUTES::", routes);
 
@@ -63,8 +64,8 @@ export const getChartOptions = (data, option) => {
     // blendMode: "lighter",
     symbolSize: 4,
     itemStyle: {
-      color: "rgb(50, 50, 150)",
-      opacity: 0.9,
+      color: "rgb(61, 190, 255)",
+      opacity: 0.7,
     },
     data: airports,
   };
@@ -92,13 +93,13 @@ export const getChartOptions = (data, option) => {
     data: routes,
   };
 
-  option = {
+  const options = {
     backgroundColor: "#000",
     globe: {
       baseTexture: ROOT_PATH + "/data-gl/asset/world.topo.bathy.200401.jpg",
       heightTexture:
         ROOT_PATH + "/data-gl/asset/bathymetry_bw_composite_4k.jpg",
-      shading: "lambert",
+      shading: "realistic",
       light: {
         ambient: {
           intensity: 0.4,
@@ -111,14 +112,20 @@ export const getChartOptions = (data, option) => {
         maxDistance: 1000,
         zoomSensitivity: 5,
         panSensitivity: 5,
-        autoRotate: false,
+        autoRotate: true,
+        autoRotateSpeed: 5,
+        autoRotateAfterStill: 5,
         damping: 0.85,
         rotateSensitivity: 2,
+      },
+      globeRadius: 90,
+      postEffect: {
+        bloom: true,
       },
     },
   };
 
-  option.series = flightSeries;
+  options.series = series === "airlines" ? flightSeries : airportSeries;
 
-  return option;
+  return options;
 };
