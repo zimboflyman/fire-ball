@@ -2,22 +2,20 @@ import React, {
   useState,
   useEffect,
   useRef,
-  useCallback,
   // useErrorHandler,
 } from "react";
 // import { ErrorBoundary } from "react-error-boundary";
 
 import "echarts-gl";
-// import ReactEcharts from "echarts-for-react";
 import * as echarts from "echarts";
 
-import "./App.css";
-
-import { getRoutes, getAirports, getChartOptions } from "./utils/dataUtils";
+import { getChartOptions } from "./utils/dataUtils";
 import Header from "./components/header";
+import Footer from "./components/Footer";
 import ShowDistanceFilter from "./components/ShowDistanceFilter";
 import ShowAirlinefilter from "./components/ShowAirlineFilter";
 import ShowOnlyAirports from "./components/ShowOnlyAirports";
+
 const App = () => {
   // get the api data from https://ssd-api.jpl.nasa.gov/doc/fireball.html
   // const apiUrl = "https://ssd-api.jpl.nasa.gov/fireball.api";
@@ -123,28 +121,23 @@ const App = () => {
       {isLoading && <div className="loader">Loading</div>}
       {hasError && <div className="loader">hasError!!!</div>}
 
-      <div ref={ref} style={{ width: "100vw", height: "85vh" }}></div>
+      <div ref={ref} style={{ width: "100vw", height: "82vh" }}></div>
       {data && (
-        <div
-          className="d-flex justify-content-around"
-          style={{ width: "100vw", height: "5vh" }}
-        >
+        <Footer>
           <ShowAirlinefilter setData={setData} />
           <ShowDistanceFilter setData={setData} />
           <ShowOnlyAirports setData={setData} />
-        </div>
+        </Footer>
       )}
 
-      {/* <header className="App-header">
-        <ErrorBoundary
+      {/* <ErrorBoundary
           FallbackComponent={ErrorFallback}
           onReset={() => {
             // reset the state of your app so the error doesn't happen again
           }}
         >
           <p>{`returned: ${data.count} records`} .</p>
-        </ErrorBoundary>
-      </header> */}
+        </ErrorBoundary> */}
     </div>
   );
 };

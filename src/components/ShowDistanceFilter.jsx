@@ -1,9 +1,11 @@
+import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { StyledDropDownBtn } from "./Toolkit";
 import { getDistance } from "../utils/dataUtils";
 
 export const ShowDistanceFilter = ({ setData }) => {
   const apiData = JSON.parse(localStorage.getItem("apiData"));
+  const [ddLabel, setDdLabel] = useState("Show long-haul flights");
 
   // filter apiData by distance between route endpoints and setData to trigger a new render
   const distanceFilter = (dist) => {
@@ -22,6 +24,7 @@ export const ShowDistanceFilter = ({ setData }) => {
     apiData.routes.length = 0;
     apiData.routes.push.apply(apiData.routes, longHaulRouteData);
 
+    setDdLabel("> " + dist + ` miles`);
     setData(apiData);
   };
 
@@ -36,9 +39,7 @@ export const ShowDistanceFilter = ({ setData }) => {
   return (
     <div>
       <Dropdown>
-        <StyledDropDownBtn variant="success" id="dropdown-basic">
-          Show long-haul flights
-        </StyledDropDownBtn>
+        <StyledDropDownBtn value={ddLabel}>{ddLabel}</StyledDropDownBtn>
         <Dropdown.Menu>
           {ddTitles.map((arr, index) => (
             <Dropdown.Item key={arr[0]} onClick={() => distanceFilter(arr[1])}>
