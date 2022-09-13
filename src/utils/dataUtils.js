@@ -1,39 +1,4 @@
-import Dropdown from "react-bootstrap/Dropdown";
-
-export const GetAirlinefilter = ({ setData }) => {
-  const apiData = JSON.parse(localStorage.getItem("apiData"));
-  const { airlines } = apiData;
-
-  // filter apiData by airline and setData to trigger a new render
-  const airlineFilter = (index) => {
-    const routeData = apiData?.routes?.filter(
-      (airportId) => airportId[0] === index + 1
-    );
-    console.log("routeData", routeData);
-
-    apiData.routes.length = 0;
-    apiData.routes.push.apply(apiData.routes, routeData);
-
-    setData(apiData);
-  };
-
-  return (
-    <div>
-      <Dropdown>
-        <Dropdown.Toggle variant="success" id="dropdown-basic">
-          select Airline
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          {airlines.map((arr, index) => (
-            <Dropdown.Item key={arr[0]} onClick={() => airlineFilter(index)}>
-              {arr[0]}
-            </Dropdown.Item>
-          ))}
-        </Dropdown.Menu>
-      </Dropdown>
-    </div>
-  );
-};
+const ROOT_PATH = "https://echarts.apache.org/examples";
 
 export const getRoutes = (data) => {
   const getAirportCoord = (idx) => [
@@ -49,7 +14,6 @@ export const getRoutes = (data) => {
 };
 
 export const getAirports = (data) => {
-  //   const airports = data?.airports?.map((airline) => [airline]);
   const airports = data?.airports?.map((airports) => [
     airports[3],
     airports[4],
@@ -58,6 +22,7 @@ export const getAirports = (data) => {
   return airports;
 };
 
+// nicked from https://www.movable-type.co.uk/scripts/latlong.html
 export const getDistance = (lat1, lon1, lat2, lon2, unit) => {
   if (lat1 === lat2 && lon1 === lon2) {
     return 0;
@@ -75,61 +40,85 @@ export const getDistance = (lat1, lon1, lat2, lon2, unit) => {
     dist = Math.acos(dist);
     dist = (dist * 180) / Math.PI;
     dist = dist * 60 * 1.1515;
-    if (unit == "K") {
+    if (unit === "K") {
       dist = dist * 1.609344;
     }
-    if (unit == "N") {
+    if (unit === "N") {
       dist = dist * 0.8684;
     }
     return dist;
   }
 };
 
-export const GetDistanceFilter = ({ setData }) => {
-  const apiData = JSON.parse(localStorage.getItem("apiData"));
+export const getChartOptions = (data, option) => {
+  const routes = getRoutes(data);
+  console.log("ROUTES::", routes);
 
-  // filter apiData by distance between route endpoints and setData to trigger a new render
-  const distanceFilter = (dist) => {
-    console.log("dist:::", dist);
-    const longHaulRouteData = apiData?.routes?.filter(
-      (airline) =>
-        getDistance(
-          apiData.airports[airline[1]][3],
-          apiData.airports[airline[1]][4],
-          apiData.airports[airline[2]][3],
-          apiData.airports[airline[2]][4],
-          "N"
-        ) > dist
-    );
+  const airports = getAirports(data);
+  console.log("airports:::", airports);
 
-    apiData.routes.length = 0;
-    apiData.routes.push.apply(apiData.routes, longHaulRouteData);
-
-    setData(apiData);
+  const airportSeries = {
+    type: "scatter3D",
+    coordinateSystem: "globe",
+    // blendMode: "lighter",
+    symbolSize: 4,
+    itemStyle: {
+      color: "rgb(50, 50, 150)",
+      opacity: 0.9,
+    },
+    data: airports,
   };
 
-  const ddTitles = [
-    ["longer than 2000 Miles", 2000],
-    ["longer than 3000 Miles", 3000],
-    ["longer than 4000 Miles", 4000],
-    ["longer than 5000 Miles", 5000],
-    ["longer than 6000 Miles", 6000],
-  ];
+  const flightSeries = {
+    type: "lines3D",
+    coordinateSystem: "globe",
+    effect: {
+      show: true,
+      trailWidth: 1,
+      trailOpacity: 0.7,
+      trailLength: 0.2,
+      constantSpeed: 5,
+    },
+    blendMode: "lighter",
+    lineStyle: {
+      width: 2,
+      color: "rgb(61, 190, 255)",
+      //purple - rgb(73,15,239)
+      //blue - rgb(61, 190, 255)
+      //pink - rgb(255, 156, 181)
+      //green - rgb(130, 240, 46)
+      opacity: 0.1,
+    },
+    data: routes,
+  };
 
-  return (
-    <div>
-      <Dropdown>
-        <Dropdown.Toggle variant="success" id="dropdown-basic">
-          show longHaul flights
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          {ddTitles.map((arr, index) => (
-            <Dropdown.Item key={arr[0]} onClick={() => distanceFilter(arr[1])}>
-              {arr[0]}
-            </Dropdown.Item>
-          ))}
-        </Dropdown.Menu>
-      </Dropdown>
-    </div>
-  );
+  option = {
+    backgroundColor: "#000",
+    globe: {
+      baseTexture: ROOT_PATH + "/data-gl/asset/world.topo.bathy.200401.jpg",
+      heightTexture:
+        ROOT_PATH + "/data-gl/asset/bathymetry_bw_composite_4k.jpg",
+      shading: "lambert",
+      light: {
+        ambient: {
+          intensity: 0.4,
+        },
+        main: {
+          intensity: 0.4,
+        },
+      },
+      viewControl: {
+        maxDistance: 1000,
+        zoomSensitivity: 5,
+        panSensitivity: 5,
+        autoRotate: false,
+        damping: 0.85,
+        rotateSensitivity: 2,
+      },
+    },
+  };
+
+  option.series = flightSeries;
+
+  return option;
 };
