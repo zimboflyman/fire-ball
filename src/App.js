@@ -13,7 +13,7 @@ import * as echarts from "echarts";
 
 import "./App.css";
 
-import { getRoutes, getAirports } from "./utils/dataUtils";
+import { getRoutes, getAirports, getChartOptions } from "./utils/dataUtils";
 import Header from "./components/header";
 import ShowDistanceFilter from "./components/ShowDistanceFilter";
 import ShowAirlinefilter from "./components/ShowAirlineFilter";
@@ -63,8 +63,7 @@ const App = () => {
   // initial zoom out on mobile devices
   // refactor to Typescript
   // prettify
-
-  const ROOT_PATH = "https://echarts.apache.org/examples";
+  // move env variables
 
   // data from api
   // 0: "date"
@@ -76,83 +75,6 @@ const App = () => {
   // 6: "lon-dir"
   // 7: "alt"
   // 8: "vel"
-
-  // useCallback hook - used to maintain the same memory reference through each render to prevent endless rendering—unless something in its dependency array changes
-  const getChartOptions = useCallback(() => {
-    const routes = getRoutes(data);
-    console.log("ROUTES::", routes);
-
-    const airports = getAirports(data);
-    console.log("airports:::", airports);
-
-    const airportSeries = {
-      type: "scatter3D",
-      coordinateSystem: "globe",
-      // blendMode: "lighter",
-      symbolSize: 4,
-      itemStyle: {
-        color: "rgb(50, 50, 150)",
-        opacity: 0.9,
-      },
-      data: airports,
-    };
-
-    const flightSeries = {
-      type: "lines3D",
-      coordinateSystem: "globe",
-      effect: {
-        show: true,
-        trailWidth: 1,
-        trailOpacity: 0.7,
-        trailLength: 0.2,
-        constantSpeed: 5,
-      },
-      blendMode: "lighter",
-      lineStyle: {
-        width: 2,
-        color: "rgb(61, 190, 255)",
-        //purple - rgb(73,15,239)
-        //blue - rgb(61, 190, 255)
-        //pink - rgb(255, 156, 181)
-        //green - rgb(130, 240, 46)
-        opacity: 0.1,
-      },
-      data: routes,
-    };
-
-    option = {
-      backgroundColor: "#000",
-      globe: {
-        baseTexture: ROOT_PATH + "/data-gl/asset/world.topo.bathy.200401.jpg",
-        heightTexture:
-          ROOT_PATH + "/data-gl/asset/bathymetry_bw_composite_4k.jpg",
-        shading: "lambert",
-        light: {
-          ambient: {
-            intensity: 0.4,
-          },
-          main: {
-            intensity: 0.4,
-          },
-        },
-        viewControl: {
-          maxDistance: 1000,
-          zoomSensitivity: 5,
-          panSensitivity: 5,
-          autoRotate: false,
-          damping: 0.85,
-          rotateSensitivity: 2,
-        },
-      },
-    };
-
-    option.series = flightSeries;
-
-    // const chartDom = ref.current;
-    // const globeChart = echarts.init(chartDom);
-
-    // option && globeChart.setOption(option);
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -185,7 +107,7 @@ const App = () => {
   }, [hasError]);
 
   useEffect(() => {
-    data && getChartOptions();
+    data && (option = getChartOptions(data, option));
     const chartDom = ref.current;
     const globeChart = echarts.init(chartDom);
 
@@ -204,7 +126,7 @@ const App = () => {
       <div ref={ref} style={{ width: "100vw", height: "85vh" }}></div>
       {data && (
         <div
-          class="d-flex justify-content-around"
+          className="d-flex justify-content-around"
           style={{ width: "100vw", height: "5vh" }}
         >
           <ShowAirlinefilter setData={setData} />
@@ -213,7 +135,6 @@ const App = () => {
         </div>
       )}
 
-      {/* <ReactEcharts option={option} /> */}
       {/* <header className="App-header">
         <ErrorBoundary
           FallbackComponent={ErrorFallback}

@@ -1,3 +1,5 @@
+const ROOT_PATH = "https://echarts.apache.org/examples";
+
 export const getRoutes = (data) => {
   const getAirportCoord = (idx) => [
     data.airports[idx][3],
@@ -12,7 +14,6 @@ export const getRoutes = (data) => {
 };
 
 export const getAirports = (data) => {
-  //   const airports = data?.airports?.map((airline) => [airline]);
   const airports = data?.airports?.map((airports) => [
     airports[3],
     airports[4],
@@ -21,6 +22,7 @@ export const getAirports = (data) => {
   return airports;
 };
 
+// nicked from https://www.movable-type.co.uk/scripts/latlong.html
 export const getDistance = (lat1, lon1, lat2, lon2, unit) => {
   if (lat1 === lat2 && lon1 === lon2) {
     return 0;
@@ -46,4 +48,77 @@ export const getDistance = (lat1, lon1, lat2, lon2, unit) => {
     }
     return dist;
   }
+};
+
+export const getChartOptions = (data, option) => {
+  const routes = getRoutes(data);
+  console.log("ROUTES::", routes);
+
+  const airports = getAirports(data);
+  console.log("airports:::", airports);
+
+  const airportSeries = {
+    type: "scatter3D",
+    coordinateSystem: "globe",
+    // blendMode: "lighter",
+    symbolSize: 4,
+    itemStyle: {
+      color: "rgb(50, 50, 150)",
+      opacity: 0.9,
+    },
+    data: airports,
+  };
+
+  const flightSeries = {
+    type: "lines3D",
+    coordinateSystem: "globe",
+    effect: {
+      show: true,
+      trailWidth: 1,
+      trailOpacity: 0.7,
+      trailLength: 0.2,
+      constantSpeed: 5,
+    },
+    blendMode: "lighter",
+    lineStyle: {
+      width: 2,
+      color: "rgb(61, 190, 255)",
+      //purple - rgb(73,15,239)
+      //blue - rgb(61, 190, 255)
+      //pink - rgb(255, 156, 181)
+      //green - rgb(130, 240, 46)
+      opacity: 0.1,
+    },
+    data: routes,
+  };
+
+  option = {
+    backgroundColor: "#000",
+    globe: {
+      baseTexture: ROOT_PATH + "/data-gl/asset/world.topo.bathy.200401.jpg",
+      heightTexture:
+        ROOT_PATH + "/data-gl/asset/bathymetry_bw_composite_4k.jpg",
+      shading: "lambert",
+      light: {
+        ambient: {
+          intensity: 0.4,
+        },
+        main: {
+          intensity: 0.4,
+        },
+      },
+      viewControl: {
+        maxDistance: 1000,
+        zoomSensitivity: 5,
+        panSensitivity: 5,
+        autoRotate: false,
+        damping: 0.85,
+        rotateSensitivity: 2,
+      },
+    },
+  };
+
+  option.series = flightSeries;
+
+  return option;
 };
