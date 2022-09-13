@@ -50,7 +50,7 @@ export const getDistance = (lat1, lon1, lat2, lon2, unit) => {
   }
 };
 
-export const getChartOptions = (data, option) => {
+export const getChartOptions = (data, series) => {
   const routes = getRoutes(data);
   console.log("ROUTES::", routes);
 
@@ -63,8 +63,8 @@ export const getChartOptions = (data, option) => {
     // blendMode: "lighter",
     symbolSize: 4,
     itemStyle: {
-      color: "rgb(50, 50, 150)",
-      opacity: 0.9,
+      color: "rgb(61, 190, 255)",
+      opacity: 0.7,
     },
     data: airports,
   };
@@ -92,7 +92,7 @@ export const getChartOptions = (data, option) => {
     data: routes,
   };
 
-  option = {
+  const options = {
     backgroundColor: "#000",
     globe: {
       baseTexture: ROOT_PATH + "/data-gl/asset/world.topo.bathy.200401.jpg",
@@ -118,7 +118,7 @@ export const getChartOptions = (data, option) => {
     },
   };
 
-  option.series = flightSeries;
+  options.series = series === "airlines" ? flightSeries : airportSeries;
 
-  return option;
+  return options;
 };

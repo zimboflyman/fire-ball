@@ -30,6 +30,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [data, setData] = useState();
+  const [series, setSeries] = useState("airlines");
   let option;
 
   // use fetch instead of try / catch
@@ -78,7 +79,6 @@ const App = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(apiUrl);
-        console.log("response Status = ", response.status);
         if (!response.ok) {
           setHasError(true);
           setIsLoading(false);
@@ -105,7 +105,7 @@ const App = () => {
   }, [hasError]);
 
   useEffect(() => {
-    data && (option = getChartOptions(data, option));
+    data && (option = getChartOptions(data, series));
     const chartDom = ref.current;
     const globeChart = echarts.init(chartDom);
 
@@ -113,7 +113,7 @@ const App = () => {
     window.addEventListener("resize", globeChart.resize);
 
     return () => {};
-  }, [data, getChartOptions, option, setData]);
+  }, [data, getChartOptions, option, setData, setSeries, series]);
 
   return (
     <div className="App">
@@ -124,9 +124,9 @@ const App = () => {
       <div ref={ref} style={{ width: "100vw", height: "82vh" }}></div>
       {data && (
         <Footer>
-          <ShowAirlinefilter setData={setData} />
-          <ShowDistanceFilter setData={setData} />
-          <ShowOnlyAirports setData={setData} />
+          <ShowAirlinefilter setData={setData} setSeries={setSeries} />
+          <ShowDistanceFilter setData={setData} setSeries={setSeries} />
+          <ShowOnlyAirports setData={setData} setSeries={setSeries} />
         </Footer>
       )}
 

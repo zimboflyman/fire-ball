@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { StyledDropDownBtn } from "./Toolkit";
 
-export const ShowAirlinefilter = ({ setData }) => {
+export const ShowAirlinefilter = ({ setData, setSeries }) => {
   const apiData = JSON.parse(localStorage.getItem("apiData"));
   const { airlines } = apiData;
   const [airlineName, setAirlineName] = useState("Select airline");
@@ -18,6 +18,7 @@ export const ShowAirlinefilter = ({ setData }) => {
 
     setAirlineName(airline);
     setData(apiData);
+    setSeries("airlines");
   };
 
   return (
