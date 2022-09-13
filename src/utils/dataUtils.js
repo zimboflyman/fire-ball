@@ -17,6 +17,7 @@ export const getAirports = (data) => {
   const airports = data?.airports?.map((airports) => [
     airports[3],
     airports[4],
+    airports[0],
   ]);
 
   return airports;
@@ -98,7 +99,7 @@ export const getChartOptions = (data, series) => {
       baseTexture: ROOT_PATH + "/data-gl/asset/world.topo.bathy.200401.jpg",
       heightTexture:
         ROOT_PATH + "/data-gl/asset/bathymetry_bw_composite_4k.jpg",
-      shading: "lambert",
+      shading: "realistic",
       light: {
         ambient: {
           intensity: 0.4,
@@ -111,9 +112,15 @@ export const getChartOptions = (data, series) => {
         maxDistance: 1000,
         zoomSensitivity: 5,
         panSensitivity: 5,
-        autoRotate: false,
+        autoRotate: true,
+        autoRotateSpeed: 5,
+        autoRotateAfterStill: 5,
         damping: 0.85,
         rotateSensitivity: 2,
+      },
+      globeRadius: 90,
+      postEffect: {
+        bloom: true,
       },
     },
   };

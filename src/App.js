@@ -55,16 +55,16 @@ const App = () => {
   //   );
   // };
 
-  // todo list
+  // todo list //////////////////////////////////////////////////
+  // fix muddle up between American Airlines and EasyJet
   // download assets
-  // style DD's and sort selected label
   // get minimal bundle
   // initial zoom out on mobile devices
   // refactor to Typescript
   // prettify
   // move env variables
-
-  // data from api
+  /////////////////////////////////////////////////////////////////
+  // data from  nasa api
   // 0: "date"
   // 1: "energy"
   // 2: "impact-e"
