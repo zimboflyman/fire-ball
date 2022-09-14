@@ -10,6 +10,7 @@ import { ErrorContainer } from "./components/Toolkit";
 import ShowDistanceFilter from "./components/ShowDistanceFilter";
 import ShowAirlinefilter from "./components/ShowAirlineFilter";
 import ShowOnlyAirports from "./components/ShowOnlyAirports";
+import InfoContainer from "./components/InfoContainer";
 
 const App = () => {
   const ref = useRef(null);
@@ -26,9 +27,11 @@ const App = () => {
   ]);
 
   // todo list //////////////////////////////////////////////////
-  // ** need to run before start:
+  // ** need to run before yarn start:
   // ** - open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
+
   // fix muddle up between American Airlines and EasyJet
+  // add fireball filters to show impact energy and/or brightness
   // download assets
   // move env variables
   // refactor to Typescript
@@ -115,7 +118,7 @@ const App = () => {
               <ShowOnlyAirports setData={setData} setSeries={setSeries} />
             </>
           ) : (
-            ""
+            <InfoContainer />
           )}
         </Footer>
       )}

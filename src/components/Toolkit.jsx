@@ -81,3 +81,14 @@ export const StyledH1 = styled.h1`
     font-size: 1.6em;
   }
 `;
+
+export const StyledH5 = styled(StyledH1)`
+  font-size: 0.8em;
+  padding: 1.8em;
+  box-sizing: border-box;
+  text-align: center;
+
+  @media screen and (min-width: 576px) {
+    font-size: 1em;
+  }
+`;
