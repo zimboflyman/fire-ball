@@ -15,14 +15,15 @@ import Footer from "./components/Footer";
 import ShowDistanceFilter from "./components/ShowDistanceFilter";
 import ShowAirlinefilter from "./components/ShowAirlineFilter";
 import ShowOnlyAirports from "./components/ShowOnlyAirports";
+// import ShowFireBalls from "./components/ShowFireBalls";
 
 const App = () => {
   // get the api data from https://ssd-api.jpl.nasa.gov/doc/fireball.html
   // const apiUrl = "https://ssd-api.jpl.nasa.gov/fireball.api";
   // const apiUrl =
   //   "https://echarts.apache.org/examples/data-gl/asset/data/population.json";
-  const apiUrl =
-    "https://echarts.apache.org/examples/data-gl/asset/data/flights.json";
+  // const apiUrl =
+  //   "https://echarts.apache.org/examples/data-gl/asset/data/flights.json";
 
   // const handleError = useErrorHandler();
   const ref = useRef(null);
@@ -31,6 +32,11 @@ const App = () => {
   const [hasError, setHasError] = useState(false);
   const [data, setData] = useState();
   const [series, setSeries] = useState("airlines");
+  const [apiUrl, setApiUrl] = useState([
+    "https://echarts.apache.org/examples/data-gl/asset/data/flights.json",
+    1,
+  ]);
+
   let option;
 
   // use fetch instead of try / catch
@@ -56,13 +62,16 @@ const App = () => {
   // };
 
   // todo list //////////////////////////////////////////////////
+  // ** need to run before start:
+  // ** - open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
   // fix muddle up between American Airlines and EasyJet
   // download assets
-  // get minimal bundle
-  // initial zoom out on mobile devices
   // refactor to Typescript
   // prettify
   // move env variables
+  // add react-testing-lib tests
+  // initial zoom out on mobile devices
+  // get minimal bundle for charts
   /////////////////////////////////////////////////////////////////
   // data from  nasa api
   // 0: "date"
@@ -78,7 +87,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl[0]);
         if (!response.ok) {
           setHasError(true);
           setIsLoading(false);
@@ -90,7 +99,11 @@ const App = () => {
         const jsonData = await response.json();
         console.log("jsonData:::", jsonData);
         setData(jsonData);
-        localStorage.setItem("apiData", JSON.stringify(jsonData));
+        if (apiUrl[1] === 0) {
+          localStorage.setItem("apiDataNasa", JSON.stringify(jsonData));
+        } else {
+          localStorage.setItem("apiData", JSON.stringify(jsonData));
+        }
         setIsLoading(false);
       } catch (error) {
         console.log("error here!", error.message);
@@ -102,7 +115,7 @@ const App = () => {
     fetchData();
     // const chartDom = ref.current;
     // globeChart = echarts.init(ref.current);
-  }, [hasError]);
+  }, [apiUrl, setApiUrl, hasError]);
 
   useEffect(() => {
     data && (option = getChartOptions(data, series));
@@ -117,16 +130,26 @@ const App = () => {
 
   return (
     <div className="App">
-      <Header style={{ width: "100vw", height: "10vh" }} />
+      <Header
+        setApiUrl={setApiUrl}
+        setSeries={setSeries}
+        style={{ width: "100vw", height: "10vh" }}
+      />
       {isLoading && <div className="loader">Loading</div>}
       {hasError && <div className="loader">hasError!!!</div>}
 
       <div ref={ref} style={{ width: "100vw", height: "82vh" }}></div>
       {data && (
         <Footer>
-          <ShowAirlinefilter setData={setData} setSeries={setSeries} />
-          <ShowDistanceFilter setData={setData} setSeries={setSeries} />
-          <ShowOnlyAirports setData={setData} setSeries={setSeries} />
+          {apiUrl[1] === 1 ? (
+            <>
+              <ShowAirlinefilter setData={setData} setSeries={setSeries} />
+              <ShowDistanceFilter setData={setData} setSeries={setSeries} />
+              <ShowOnlyAirports setData={setData} setSeries={setSeries} />
+            </>
+          ) : (
+            ""
+          )}
         </Footer>
       )}
 

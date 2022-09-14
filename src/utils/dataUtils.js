@@ -23,6 +23,25 @@ export const getAirports = (data) => {
   return airports;
 };
 
+//https://stackoverflow.com/questions/1140189/converting-latitude-and-longitude-to-decimal-values
+function ConvertToDD(degrees, direction) {
+  var dd = degrees;
+
+  if (direction === "S" || direction === "W") {
+    dd = dd * -1;
+  } // do nothing for N or E
+  return dd;
+}
+
+export const getFireBalls = (data) => {
+  //map the airport ID's to each route and get the co-ords
+  const locations = data?.map((item) => [
+    ConvertToDD(item[3], item[4]),
+    ConvertToDD(item[5], item[6]),
+  ]);
+  return locations;
+};
+
 // nicked from https://www.movable-type.co.uk/scripts/latlong.html
 export const getDistance = (lat1, lon1, lat2, lon2, unit) => {
   if (lat1 === lat2 && lon1 === lon2) {
@@ -57,6 +76,21 @@ export const getChartOptions = (data, series) => {
 
   const airports = getAirports(data);
   console.log("airports:::", airports);
+
+  const fireBalls = getFireBalls(data.data);
+  console.log("fireBalls:::", fireBalls);
+
+  const fireBallSeries = {
+    type: "scatter3D",
+    coordinateSystem: "globe",
+    // blendMode: "lighter",
+    symbolSize: 4,
+    itemStyle: {
+      color: "red",
+      opacity: 0.7,
+    },
+    data: fireBalls,
+  };
 
   const airportSeries = {
     type: "scatter3D",
@@ -93,6 +127,18 @@ export const getChartOptions = (data, series) => {
     data: routes,
   };
 
+  const getSeries = (series) => {
+    switch (series) {
+      case "airlines":
+        return flightSeries;
+      case "airports":
+        return airportSeries;
+      case "fireBalls":
+        return fireBallSeries;
+      default:
+    }
+  };
+
   const options = {
     backgroundColor: "#000",
     globe: {
@@ -125,7 +171,7 @@ export const getChartOptions = (data, series) => {
     },
   };
 
-  options.series = series === "airlines" ? flightSeries : airportSeries;
+  options.series = getSeries(series);
 
   return options;
 };
