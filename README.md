@@ -1,13 +1,10 @@
-# Getting Started
-
-This project was bootstrapped with
-[Create React App](https://github.com/facebook/create-react-app).
-
 ## How to run - 4 easy steps
 
 1. clone the main branch locally
 
-In the project root directory, 2. install dependences by running `yarn`
+In the project root directory,
+
+2. install dependences by running `yarn`
 
 3. run the following to get around CORS issues (otherwise the api data will not
    be returned)
@@ -22,3 +19,8 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
+---
+
+This project was bootstrapped with
+[Create React App](https://github.com/facebook/create-react-app).
