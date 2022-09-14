@@ -35,9 +35,20 @@ function ConvertToDD(degrees, direction) {
 
 export const getFireBalls = (data) => {
   //map the airport ID's to each route and get the co-ords
+  // data from  nasa api
+  // 0: "date"
+  // 1: "energy"
+  // 2: "impact-e"
+  // 3: "lat"
+  // 4: "lat-dir"
+  // 5: "lon"
+  // 6: "lon-dir"
+  // 7: "alt"
+  // 8: "vel"
   const locations = data?.map((item) => [
     ConvertToDD(item[3], item[4]),
     ConvertToDD(item[5], item[6]),
+    item[7],
   ]);
   return locations;
 };
@@ -83,11 +94,10 @@ export const getChartOptions = (data, series) => {
   const fireBallSeries = {
     type: "scatter3D",
     coordinateSystem: "globe",
-    // blendMode: "lighter",
-    symbolSize: 4,
+    symbolSize: 5,
     itemStyle: {
       color: "red",
-      opacity: 0.7,
+      opacity: 0.9,
     },
     data: fireBalls,
   };
@@ -95,7 +105,6 @@ export const getChartOptions = (data, series) => {
   const airportSeries = {
     type: "scatter3D",
     coordinateSystem: "globe",
-    // blendMode: "lighter",
     symbolSize: 4,
     itemStyle: {
       color: "rgb(61, 190, 255)",
@@ -118,10 +127,6 @@ export const getChartOptions = (data, series) => {
     lineStyle: {
       width: 2,
       color: "rgb(61, 190, 255)",
-      //purple - rgb(73,15,239)
-      //blue - rgb(61, 190, 255)
-      //pink - rgb(255, 156, 181)
-      //green - rgb(130, 240, 46)
       opacity: 0.1,
     },
     data: routes,

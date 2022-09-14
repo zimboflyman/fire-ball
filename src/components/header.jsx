@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import Dropdown from "react-bootstrap/Dropdown";
-import { StyledDropDownBtn } from "./Toolkit";
-import { StyledH1 } from "./Toolkit";
-
-const StyledContainer = styled.div`
-  background: linear-gradient(120deg, rgb(26, 172, 204), rgb(96, 3, 139));
-`;
+import { HeaderContainer, StyledH1, HeaderDropDownBtn } from "./Toolkit";
 
 const Header = ({ setApiUrl, setSeries }) => {
   const [ddLabel, setDdLabel] = useState("Select data api");
@@ -14,6 +8,7 @@ const Header = ({ setApiUrl, setSeries }) => {
     ["Nasa Fireball data", 0],
     ["Flight data", 1],
   ];
+  // get the api data from either Nasa or gl-charts flight sample
   const apiArray = [
     ["https://ssd-api.jpl.nasa.gov/fireball.api", 0],
     ["https://echarts.apache.org/examples/data-gl/asset/data/flights.json", 1],
@@ -21,25 +16,28 @@ const Header = ({ setApiUrl, setSeries }) => {
 
   const selectApi = (titleArr) => {
     console.log("titleArr :>> ", titleArr);
+    // update the dropdown title with selected item
     setDdLabel(titleArr[0]);
+    // set the api Url and trigger a refetch of api data
     setApiUrl(apiArray[titleArr[1]]);
     console.log("apiArray :>> ", apiArray[titleArr[1]]);
-    // if (titleArr[1] === 0) {
-    //   setSeries("fireBalls");
-    // } else {
-    //   setSeries("airlines");
-    // }
-    setSeries("fireBalls");
+
+    // make sure the re-rendered globe is using the correct visual style
+    if (titleArr[1] === 0) {
+      setSeries("fireBalls");
+    } else {
+      setSeries("airlines");
+    }
   };
 
   return (
     <>
-      <StyledContainer className=" w-100  d-flex align-items-stretch">
+      <HeaderContainer className="p-1 d-flex align-items-stretch">
         <StyledH1 className="m-auto d-flex justify-content-center">
-          Global flight patterns and comets
+          Global flight patterns and comets (fireBalls)
         </StyledH1>
-        <Dropdown>
-          <StyledDropDownBtn>{ddLabel}</StyledDropDownBtn>
+        <Dropdown className="d-flex">
+          <HeaderDropDownBtn>{ddLabel}</HeaderDropDownBtn>
           <Dropdown.Menu>
             {ddTitles.map((titleArr, index) => (
               <Dropdown.Item
@@ -51,7 +49,7 @@ const Header = ({ setApiUrl, setSeries }) => {
             ))}
           </Dropdown.Menu>
         </Dropdown>
-      </StyledContainer>
+      </HeaderContainer>
     </>
   );
 };

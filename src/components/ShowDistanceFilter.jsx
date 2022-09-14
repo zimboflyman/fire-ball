@@ -25,7 +25,9 @@ export const ShowDistanceFilter = ({ setData, setSeries }) => {
     apiData.routes.push.apply(apiData.routes, longHaulRouteData);
 
     setDdLabel(">  " + dist + ` miles`);
+    // update data with filtered data and trigger re-render of the globe with new data
     setData(apiData);
+    // set globe chart visual style
     setSeries("airlines");
   };
 

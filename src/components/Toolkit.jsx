@@ -2,6 +2,17 @@ import styled from "styled-components";
 import Dropdown from "react-bootstrap/Dropdown";
 import { lighten } from "polished";
 
+export const HeaderContainer = styled.div`
+  background: linear-gradient(120deg, rgb(26, 172, 204), rgb(96, 3, 139));
+`;
+
+export const ErrorContainer = styled.div`
+  display: flex;
+  padding: 1em;
+  width: 100%;
+  font-size: 18px;
+`;
+
 export const StyledDropDownBtn = styled(Dropdown.Toggle)`
   color: rgba(255, 255, 255, 0.8);
   background-color: rgb(37, 42, 100);
@@ -41,12 +52,13 @@ export const HeaderDropDownBtn = styled(Dropdown.Toggle)`
   cursor: pointer;
   line-height: 1;
   justify-content: center;
-  margin-bottom: 0.5em;
-  margin-right: 0.3em;
+  margin: 0.3em;
+  background: none;
 
   @media screen and (min-width: 576px) {
     padding: 1em;
     font-size: 1em;
+    margin: 0.4em;
     min-width: 200px;
   }
 
