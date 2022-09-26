@@ -34,7 +34,7 @@ function ConvertToDD(degrees, direction) {
 }
 
 export const getFireBalls = (data) => {
-  //map the airport ID's to each route and get the co-ords
+  // get the co-ords of each fireball and convert to decimal lat and long
   // data from  nasa api
   // 0: "date"
   // 1: "energy"

@@ -68,12 +68,14 @@ const App = () => {
       }
     };
     fetchData();
-  }, [apiUrl, setApiUrl, hasError]);
+  }, [apiUrl, setApiUrl]);
 
   useEffect(() => {
     const id = setTimeout(() => {
       //prevent running getChartOptions with old or before data received from fetchData()
       data && (option = getChartOptions(data, series));
+
+      // placed in 2nd useEffect so that canvas is already rendered!
       const chartDom = ref.current;
       const globeChart = echarts.init(chartDom);
       option && globeChart.setOption(option);

@@ -4,11 +4,13 @@ import { StyledDropDownBtn } from "./Toolkit";
 
 export const ShowAirlinefilter = ({ setData, setSeries }) => {
   const apiData = JSON.parse(localStorage.getItem("apiData"));
+  //destructure
   const { airlines } = apiData;
   const [airlineName, setAirlineName] = useState("Select airline");
 
   // filter apiData by airline and setData to trigger a new render
   const airlineFilter = (index, airline) => {
+    //get all the routes for this airline
     const routeData = apiData?.routes?.filter(
       (airportId) => airportId[0] === index + 1
     );

@@ -9,7 +9,6 @@ export const ShowDistanceFilter = ({ setData, setSeries }) => {
 
   // filter apiData by distance between route endpoints and setData to trigger a new render
   const distanceFilter = (dist) => {
-    console.log("dist:::", dist);
     const longHaulRouteData = apiData?.routes?.filter(
       (airline) =>
         getDistance(
