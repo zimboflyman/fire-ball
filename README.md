@@ -6,7 +6,7 @@ In the project root directory,
 
 2. install dependences by running `yarn`
 
-3. run the following in terminal to get around CORS issues - Yis will open a new chrome window ready for http://localhost:3000
+3. run the following in terminal to get around CORS issues - this will open a new chrome window ready for http://localhost:3000
    (otherwise the api data will not be returned)
 
 `open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security`
