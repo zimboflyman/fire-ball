@@ -9,7 +9,7 @@ In the project root directory,
 3. run the following to get around CORS issues (otherwise the api data will not
    be returned)
 
-`open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args--user-data-dir="/tmp/chrome_dev_test" --disable-web-security`
+`open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security`
 
 4. run `yarn start`
 
